@@ -38,9 +38,6 @@ RUN apt-get -y python3-pip python3-dev build-essential libssl-dev libmysqlclient
     && mkdir -p /sopds/tmp/ \
     && chmod ugo+w /sopds/tmp/
 
-FROM python:3.10.9-slim-buster AS production-stage
-LABEL maintainer="snoopykill@mail.ru"
-
 ENV DB_USER="sopds" \
     DB_NAME="sopds" \
     DB_PASS="sopds" \
@@ -59,15 +56,12 @@ ENV DB_USER="sopds" \
     CONV_LOG="/sopds/opds_catalog/log" \
     VERSION="0.47-devel"
 
-COPY --from=build-stage /sopds /sopds
-COPY --from=build-stage /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
 COPY scripts/start.sh /start.sh
 
 RUN chmod +x /start.sh
 
 WORKDIR /sopds
 
-VOLUME /var/lib/pgsql
 EXPOSE 8001
 
 ENTRYPOINT ["/start.sh"]

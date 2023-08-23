@@ -1,5 +1,5 @@
-FROM python:3.10.9-alpine3.16 AS build-stage
-LABEL maintainer="mail@zveronline.ru"
+FROM python:3.10.9-slim-buster AS build-stage
+LABEL maintainer="snoopykill@mail.ru"
 
 WORKDIR /sopds
 
@@ -7,7 +7,8 @@ ADD https://github.com/mitshel/sopds/archive/refs/heads/master.zip /sopds.zip
 ARG FB2C_I386=https://github.com/rupor-github/fb2converter/releases/latest/download/fb2c_linux_i386.zip
 ARG FB2C_ARM64=https://github.com/rupor-github/fb2converter/releases/latest/download/fb2c_linux_arm64.zip
 
-RUN apk add --no-cache -U unzip \
+RUN apt-get -y update \
+    && apt-get insall -y unzip \
     && unzip /sopds.zip && rm /sopds.zip && mv sopds-*/* ./
 
 COPY requirements.txt .
@@ -15,10 +16,10 @@ COPY configs/settings.py ./sopds
 COPY scripts/fb2conv /fb2conv
 COPY scripts/superuser.exp .
 
-RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev postgresql-dev libffi-dev libc-dev jpeg-dev zlib-dev curl \
-    && cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime \
-    && echo "Europe/Moscow" > /etc/timezone \
-    && pip3 install --upgrade pip setuptools 'psycopg2-binary>=2.8,<2.9' \
+RUN apt-get -y python3-pip python3-dev build-essential libssl-dev libmysqlclient-dev \
+    && cp /usr/share/zoneinfo/Europe/Warsaw /etc/localtime \
+    && echo "Europe/Warsaw" > /etc/timezone \
+    && pip3 install --upgrade setuptools 'psycopg2-binary>=2.8,<2.9' \
     && pip3 install --upgrade -r requirements.txt \
     && if [ $(uname -m) = "aarch64" ]; then \
         curl -L -o /fb2c_linux.zip ${FB2C_ARM64}; \
@@ -37,8 +38,8 @@ RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev postgresql-d
     && mkdir -p /sopds/tmp/ \
     && chmod ugo+w /sopds/tmp/
 
-FROM python:3.10.9-alpine3.16 AS production-stage
-LABEL maintainer="mail@zveronline.ru"
+FROM python:3.10.9-slim-buster AS production-stage
+LABEL maintainer="snoopykill@mail.ru"
 
 ENV DB_USER="sopds" \
     DB_NAME="sopds" \
@@ -46,7 +47,7 @@ ENV DB_USER="sopds" \
     DB_HOST="" \
     DB_PORT="" \
     EXT_DB="False" \
-    TIME_ZONE="Europe/Moscow" \
+    TIME_ZONE="Europe/Warsaw" \
     SOPDS_ROOT_LIB="/library" \
     SOPDS_INPX_ENABLE="True" \
     SOPDS_LANGUAGE="ru-RU" \
@@ -62,8 +63,7 @@ COPY --from=build-stage /sopds /sopds
 COPY --from=build-stage /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
 COPY scripts/start.sh /start.sh
 
-RUN apk add --no-cache -U bash libxml2 libxslt libffi libjpeg zlib postgresql expect \
-    && chmod +x /start.sh
+RUN chmod +x /start.sh
 
 WORKDIR /sopds
 

@@ -6,3 +6,4 @@ django-picklefield
 lxml
 python-telegram-bot==10.1.0
 tzlocal==2.1
+mysqlclient==2.1.1

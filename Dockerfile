@@ -8,7 +8,7 @@ ARG FB2C_I386=https://github.com/rupor-github/fb2converter/releases/latest/downl
 ARG FB2C_ARM64=https://github.com/rupor-github/fb2converter/releases/latest/download/fb2c_linux_arm64.zip
 
 RUN apt-get -y update \
-    && apt-get insall -y unzip \
+    && apt-get install -y unzip \
     && unzip /sopds.zip && rm /sopds.zip && mv sopds-*/* ./
 
 COPY requirements.txt .
@@ -16,10 +16,9 @@ COPY configs/settings.py ./sopds
 COPY scripts/fb2conv /fb2conv
 COPY scripts/superuser.exp .
 
-RUN apt-get -y python3-pip python3-dev build-essential libssl-dev libmysqlclient-dev \
+RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev default-libmysqlclient-dev curl \
     && cp /usr/share/zoneinfo/Europe/Warsaw /etc/localtime \
     && echo "Europe/Warsaw" > /etc/timezone \
-    && pip3 install --upgrade setuptools 'psycopg2-binary>=2.8,<2.9' \
     && pip3 install --upgrade -r requirements.txt \
     && if [ $(uname -m) = "aarch64" ]; then \
         curl -L -o /fb2c_linux.zip ${FB2C_ARM64}; \

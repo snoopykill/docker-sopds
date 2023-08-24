@@ -8,16 +8,18 @@ ARG FB2C_I386=https://github.com/rupor-github/fb2converter/releases/latest/downl
 ARG FB2C_ARM64=https://github.com/rupor-github/fb2converter/releases/latest/download/fb2c_linux_arm64.zip
 
 RUN apt-get -y update \
-    && apt-get install -y unzip \
+    && apt-get install -y unzip python3-pip python3-dev build-essential libssl-dev default-libmysqlclient-dev curl \
     && unzip /sopds.zip && rm /sopds.zip && mv sopds-*/* ./
 
 COPY requirements.txt .
 COPY configs/settings.py ./sopds
 COPY scripts/fb2conv /fb2conv
 COPY scripts/superuser.exp .
+COPY scripts/start.sh /start.sh
 
-RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev default-libmysqlclient-dev curl \
-    && cp /usr/share/zoneinfo/Europe/Warsaw /etc/localtime \
+RUN chmod +x /start.sh
+
+RUN cp /usr/share/zoneinfo/Europe/Warsaw /etc/localtime \
     && echo "Europe/Warsaw" > /etc/timezone \
     && pip3 install --upgrade -r requirements.txt \
     && if [ $(uname -m) = "aarch64" ]; then \
@@ -54,12 +56,6 @@ ENV DB_USER="sopds" \
     MIGRATE="False" \
     CONV_LOG="/sopds/opds_catalog/log" \
     VERSION="0.47-devel"
-
-COPY scripts/start.sh /start.sh
-
-RUN chmod +x /start.sh
-
-WORKDIR /sopds
 
 EXPOSE 8001
 

@@ -3,7 +3,7 @@ LABEL maintainer="snoopykill@mail.ru"
 
 WORKDIR /sopds
 
-ADD https://github.com/mitshel/sopds/archive/refs/heads/master.zip /sopds.zip
+ADD https://github.com/snoopykill/sopds/archive/refs/heads/master.zip /sopds.zip
 ARG FB2C_I386=https://github.com/rupor-github/fb2converter/releases/latest/download/fb2c_linux_i386.zip
 
 RUN apk add --no-cache -U unzip \
@@ -14,11 +14,13 @@ COPY configs/settings.py ./sopds
 COPY scripts/fb2conv /fb2conv
 COPY scripts/superuser.exp .
 
-RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev libffi-dev libc-dev jpeg-dev zlib-dev curl \
+RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev libffi-dev libc-dev jpeg-dev zlib-dev curl mariadb-dev build-base \
     && cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime \
     && echo "Europe/Moscow" > /etc/timezone \
     && pip3 install --upgrade pip setuptools 'psycopg2-binary>=2.8,<2.9' \
     && pip3 install --upgrade -r requirements.txt \
+    && apk del mariadb-dev build-base \
+    && apk add mariadb-client-libs \
     && curl -L -o /fb2c_linux.zip ${FB2C_I386}; \
     && unzip /fb2c_linux.zip -d /sopds/convert/fb2c/ \
     && rm /fb2c_linux.zip \

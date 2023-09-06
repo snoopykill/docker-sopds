@@ -10,20 +10,22 @@ RUN apk add --no-cache -U unzip \
 
 COPY requirements.txt .
 COPY configs/settings.py ./sopds
-COPY scripts/fb2conv /fb2conv
-COPY scripts/superuser.exp .
 
-RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev libffi-dev libc-dev jpeg-dev zlib-dev curl mariadb-dev \
-    && cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime \
-    && echo "Europe/Moscow" > /etc/timezone \
+RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev libffi-dev libc-dev jpeg-dev zlib-dev curl mariadb-connector-c-dev \
+    && cp /usr/share/zoneinfo/Europe/Warsaw /etc/localtime \
+    && echo "Europe/Warsaw" > /etc/timezone \
     && pip3 install --upgrade pip setuptools \
     && pip3 install --upgrade -r requirements.txt \
-    && apk del mariadb-dev build-base \
+    && apk del build-base \
     && mkdir -p /sopds/tmp/ \
     && chmod ugo+w /sopds/tmp/
+
+ENV TIME_ZONE=Europe/Warsaw
 
 COPY scripts/start.sh /start.sh
 
 RUN chmod +x /start.sh
 
 EXPOSE 8001
+
+ENTRYPOINT ["/bin/sh","/start.sh"]

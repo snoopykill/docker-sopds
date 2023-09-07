@@ -1,7 +1,7 @@
 version: "2"
 services:
   server:
-    image: snoopykill/docker-sopds-mysql:0.8.0
+    image: snoopykill/docker-sopds-mysql:0.9.1
     restart: always
     environment:
       - DB_USER=sopds

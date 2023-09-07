@@ -1,0 +1,20 @@
+version: "2"
+services:
+  server:
+    image: snoopykill/docker-sopds-mysql:0.8.0
+    restart: always
+    environment:
+      - DB_USER=sopds
+      - DB_NAME=sopds
+      - DB_PASS=sopds
+      - DB_HOST=10.10.10.10
+      - SOPDS_ROOT_LIB=/books
+      - MIGRATE=False
+      - DBCLEAR=False
+      - SOPDS_SU_NAME=opdsadmin
+      - SOPDS_SU_EMAIL=gmail@gmail.com
+      - SOPDS_SU_PASS=opdspassword
+    volumes:
+      - "/mnt/library:/books"
+    ports:
+      - 8001:8001

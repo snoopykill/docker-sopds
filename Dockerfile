@@ -3,10 +3,10 @@ LABEL maintainer="snoopykill@mail.ru"
 
 WORKDIR /sopds
 
-RUN wget https://github.com/snoopykill/sopds/archive/refs/heads/master.zip && mv master.zip sopds.zip
+RUN wget https://github.com/snoopykill/sopds/archive/refs/heads/master.zip && mv master.zip /sopds.zip
 
 RUN apk add --no-cache -U unzip \
-    && unzip sopds.zip && rm sopds.zip && mv sopds-*/* ./
+    && unzip /sopds.zip && rm /sopds.zip && mv sopds-*/* ./
 
 COPY requirements.txt .
 COPY configs/settings.py ./sopds
@@ -20,11 +20,13 @@ RUN apk add --no-cache -U tzdata build-base libxml2-dev libxslt-dev libffi-dev l
     && mkdir -p /sopds/tmp/ \
     && chmod ugo+w /sopds/tmp/
 
-ENV TIME_ZONE=Europe/Warsaw
+ENV TIME_ZONE="Europe/Warsaw" 
 
 COPY scripts/start.sh /start.sh
 
 RUN chmod +x /start.sh
+
+WORKDIR /sopds
 
 EXPOSE 8001
 

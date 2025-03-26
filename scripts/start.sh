@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #DB
 if [ $MIGRATE == True ]; then
 python3 manage.py migrate

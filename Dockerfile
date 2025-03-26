@@ -1,4 +1,4 @@
-FROM python:3.10.9-slim-buster
+FROM python:3.10-slim-bookworm
 LABEL maintainer="snoopykill@mail.ru"
 
 WORKDIR /sopds

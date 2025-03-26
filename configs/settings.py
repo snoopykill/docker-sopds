@@ -86,19 +86,23 @@ WSGI_APPLICATION = 'sopds.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'sopds',
-#        'HOST': 'localhost',
-#        'USER': 'sopds',
-#        'PASSWORD' : 'sopds',
-#        'OPTIONS' : {
-#            'init_command': "SET default_storage_engine=MyISAM;\
-#                             SET sql_mode='';"
-#        }
-#    }
-#}
+DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': os.environ["DB_NAME"],
+       'HOST': os.environ["DB_HOST"],
+       'USER': os.environ["DB_USER"],
+       'PASSWORD' : os.environ["DB_PASS"],
+        'OPTIONS' : {
+           'init_command': """SET default_storage_engine=INNODB; \
+                              SET sql_mode='STRICT_TRANS_TABLES'; \
+                              SET NAMES UTF8 COLLATE utf8_general_ci; \
+                              SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED
+           """
+        }
+
+    }
+}
 
 #DATABASES = {
 #    'default': {
@@ -111,16 +115,16 @@ WSGI_APPLICATION = 'sopds.wsgi.application'
 #    }
 #}
 
-DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': os.environ["DB_NAME"],
-    'USER': os.environ["DB_USER"],
-    'PASSWORD': os.environ["DB_PASS"],
-    'HOST': os.environ["DB_HOST"], # Set to empty string for localhost.
-    'PORT': os.environ["DB_PORT"], # Set to empty string for default.
-    }
-}
+# DATABASES = {
+#     'default': {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'NAME': os.environ["DB_NAME"],
+#     'USER': os.environ["DB_USER"],
+#     'PASSWORD': os.environ["DB_PASS"],
+#     'HOST': os.environ["DB_HOST"], # Set to empty string for localhost.
+#     'PORT': os.environ["DB_PORT"], # Set to empty string for default.
+#     }
+# }
 
 #### SOPDS DATABASE SETTINGS FINISH ####
 

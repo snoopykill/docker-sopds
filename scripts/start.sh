@@ -9,7 +9,6 @@ python3 manage.py sopds_util clear
 expect /sopds/superuser.exp
 fi
 python3 manage.py sopds_util setconf SOPDS_ROOT_LIB "/books"
-python3 manage.py sopds_util setconf SOPDS_AUTH False
 python3 manage.py sopds_util setconf SOPDS_SCAN_SHED_HOUR "11"
 python3 manage.py sopds_util setconf SOPDS_LANGUAGE ru-RU
 python3 manage.py sopds_util setconf SOPDS_SCAN_START_DIRECTLY True
